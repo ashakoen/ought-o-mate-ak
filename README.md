@@ -1,95 +1,81 @@
+
 # Advanced Task Optimization Calculator
 
-## Purpose
+## Overview
 
-This app helps you determine whether you should automate a recurring task based on multiple factors, including:
+This app helps you assess whether automating a recurring task is beneficial based on multiple factors. It provides a holistic view by considering not just time savings but also the inconvenience, error potential, opportunity cost, and maintainability of manual tasks.
 
-- **Time spent:** The amount of time you currently spend on the task.
-- **Frequency:** How often you perform the task (e.g., hourly, daily, weekly).
-- **Inconvenience Factor:** How inconvenient or disruptive the task is to your workflow.
-- **Opportunity Cost:** The potential value of the time you could spend on other activities if the task were automated.
-- **Error Potential:** The likelihood of making errors when performing the task manually.
-- **Maintainability:** How easy it would be to maintain the automated solution.
+### Key Features:
+- **Time Impact**: Calculates how much time you spend on the task over 5 years.
+- **Inconvenience Factor**: Evaluates how disruptive the task is to your workflow.
+- **Opportunity Cost**: Measures the potential value of time spent elsewhere.
+- **Error Potential**: Assesses the likelihood of making mistakes.
+- **Maintainability**: Considers how difficult it would be to maintain the automated solution.
+- **Automation ROI**: Provides a clear recommendation based on the return on investment for automating the task.
 
-By considering these factors, the app provides a more holistic assessment of the potential benefits of automation beyond just the time saved.
+## Workflow & Hosting
 
-## Algorithm
+This app was developed using @vercel’s **v0.dev AI assistant** to write the code, but rather than hosting it directly with Vercel, I used **Open-Next** to port the app. After bootstrapping with Open-Next, the app was deployed to **Cloudflare Workers** using the Cloudflare adapter and Wrangler for deployment.
 
-The app calculates an "impact" score to quantify the potential benefits of automation. This score is based on the following formula:
+### My Workflow:
+```
+v0.dev -> Open-Next -> Cloudflare Workers
+```
 
-Total Impact = Time Impact (5 years) + Inconvenience Impact + Opportunity Cost Impact + Error Potential Impact + Maintainability Impact 
+This approach avoids vendor lock-in while maintaining flexibility and ease of use.
 
-**1. Time Impact (5 years):**
+## How It Works
 
-This represents the total time you would spend on the task over five years if you continued doing it manually. It's calculated as:
+### Algorithm:
 
-Time Impact = Time Spent (minutes) * Frequency Multiplier * 5
+The app calculates a "total impact" score to quantify the benefits of automation using the following formula:
 
-Where "Frequency Multiplier" is a factor based on the task's frequency (e.g., 365 for daily, 52 for weekly).
+```
+Total Impact = Time Impact (5 years) + Inconvenience Impact + Opportunity Cost Impact + Error Potential Impact + Maintainability Impact
+```
 
-**2. Inconvenience Impact, Opportunity Cost Impact, Error Potential Impact, Maintainability Impact:**
+- **Time Impact**: Time spent on the task over 5 years.
+- **Inconvenience Impact**: How disruptive the task is (based on your rating).
+- **Opportunity Cost Impact**: Time you could spend on other activities.
+- **Error Potential Impact**: Likelihood of errors.
+- **Maintainability Impact**: Difficulty of maintaining the automated solution.
 
-These factors modify the Time Impact based on your subjective ratings (on a scale of 1-10) and predefined weights:
+### Formula Details:
+| Factor            | Weight | Formula                                                    |
+|--------------------|--------|------------------------------------------------------------|
+| **Inconvenience**  | 0.2    | Inconvenience Factor * 0.2 * Time Impact (5 years)          |
+| **Opportunity Cost**| 0.2   | Opportunity Cost * 0.2 * Time Impact (5 years)             |
+| **Error Potential**| 0.1    | Error Potential * 0.1 * Time Impact (5 years)              |
+| **Maintainability**| 0.1    | (10 - Maintainability) * 0.1 * Time Impact (5 years)       |
 
-| Factor            | Weight | Calculation                                           |
-|--------------------|--------|-------------------------------------------------------|
-| Inconvenience     | 0.2    | Inconvenience Factor * 0.2 * Time Impact (5 years) |
-| Opportunity Cost | 0.2    | Opportunity Cost * 0.2 * Time Impact (5 years)     |
-| Error Potential   | 0.1    | Error Potential * 0.1 * Time Impact (5 years)       |
-| Maintainability   | 0.1    | (10 - Maintainability) * 0.1 * Time Impact (5 years) |
-
-**Note:** For Maintainability, a lower rating means a higher impact (i.e., it's more impactful if the automated solution is difficult to maintain).
-
-**3. Automation ROI:**
-
-The app also calculates an Automation ROI (Return on Investment) to estimate the efficiency of automating the task:
-
-Automation ROI = Total Impact / (Estimated Time to Automate (hours) * 60)
+#### Automation ROI:
+```
+Automation ROI = Total Impact / (Time to Automate in Hours * 60)
+```
+The app uses this ROI to recommend whether automation is **Strongly Recommended**, **Recommended**, or **Not Recommended**.
 
 ## Assumptions
+- **Task Frequency**: The task is performed consistently over the 5-year period.
+- **Subjective Ratings**: Inconvenience, opportunity cost, and error potential are user-rated.
+- **Linear Impact**: The relationship between ratings and their impact on time is linear.
 
-- **Task Frequency:** The app assumes that the task is performed at a consistent frequency over the five-year period.
-- **Linear Impact:** The calculations assume a linear relationship between the factor ratings and their impact on the overall score. In reality, the relationship might be more complex.
-- **Subjective Ratings:** The factor ratings are subjective and can vary between users. It's important to consider your own context and priorities when assigning these ratings.
+## Example Use Case
 
-## Understanding the Non-Time Fields
+Let’s say you spend 10 minutes on a task daily, it’s very inconvenient (Inconvenience Factor = 7), and you estimate 30 hours to automate the task. The app will calculate:
 
-**Scale:** All non-time fields (Inconvenience Factor, Opportunity Cost, Error Potential, Maintainability) are rated on a scale of 1 to 10, where:
+1. **Time Impact (5 years)**:  
+   `10 minutes * 365 days * 5 years = 18,250 minutes`
+   
+2. **Inconvenience Impact**:  
+   `7 * 0.2 * 18,250 = 25,550 minutes`
 
-- 1 represents the lowest impact/severity.
-- 10 represents the highest impact/severity.
+3. **Opportunity Cost Impact**:  
+   `...`
 
-**How They Factor into the Calculation:**
-
-These non-time fields acknowledge that the decision to automate a task shouldn't be based solely on time saved. For instance:
-
-- A highly inconvenient task (high Inconvenience Factor) might be a good candidate for automation even if it doesn't take much time.
-- A task with high potential for errors (high Error Potential) might be worth automating to improve accuracy, even if the time savings are moderate.
-
-By assigning weights to these factors and incorporating your subjective ratings, the app helps you quantify the "hidden costs" of manual tasks and make a more informed decision about automation.
+The app then sums up the impacts to compute **Total Impact** and provides an automation recommendation based on the **Automation ROI**.
 
 ## Saving Results
 
-The app allows you to save your most recent calculation results using the "Save Results" button. This saves the data to your browser's local storage. 
-
-**Important Notes:**
-
-- **Single Save:** Only the most recent calculation results are saved. Previous results are overwritten.
-- **Retrieval on Page Load:** When you revisit the app, it automatically loads and displays the last saved results.
-- **No Calculation History:** The app does not maintain a history of multiple calculations.
-
-## Example
-
-Let's say you spend 5 minutes daily on a task that is quite inconvenient (Inconvenience Factor = 8) and has a high opportunity cost (Opportunity Cost = 9). You estimate that it would take 20 hours to automate this task. 
-
-The app would calculate the following:
-
-- Time Impact (5 years):  $$5 \text{ minutes} \times 365 \text{ days} \times 5 \text{ years} = 9125 \text{ minutes}$$
-- Inconvenience Impact:  $$8 \times 0.2 \times 9125 = 14600 \text{ minutes}$$
-- Opportunity Cost Impact:  $$9 \times 0.2 \times 9125 = 16425 \text{ minutes}$$
-- ... (and so on for Error Potential and Maintainability)
-- Total Impact:  $$\text{Sum of all impacts}$$ 
-- Automation ROI:  $$\frac{\text{Total Impact}}{20 \text{ hours} \times 60 \text{ minutes}}$$
-
-Based on the Automation ROI, the app would then provide a recommendation on whether or not to automate the task. 
-
+- **Save Results**: You can save your most recent calculations to your browser’s local storage.
+- **Automatic Load**: When you revisit the app, your last saved results are automatically loaded.
+- **No History**: Only the most recent result is saved.
