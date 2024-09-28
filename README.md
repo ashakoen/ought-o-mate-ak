@@ -15,18 +15,18 @@ This app helps you assess whether automating a recurring task is beneficial base
 
 ## Workflow & Hosting
 
-This app was developed using @vercel’s **v0.dev AI assistant** to write the code. However, instead of hosting it directly with Vercel, I ported the app over to **Open-Next** and deployed it to **Cloudflare Workers** using the Cloudflare adapter and Wrangler CLI for deployment.
+This app was developed using @vercel’s **v0.dev AI assistant** to write the code. However, instead of hosting it directly with Vercel, I ported the app over to **OpenNext** and deployed it to **Cloudflare Workers** using the Cloudflare adapter and Wrangler CLI for deployment.
 
 ### My Workflow:
 ```
-v0.dev -> Open-Next -> Cloudflare Workers
+v0.dev -> OpenNext -> Cloudflare Workers
 ```
 
 This approach avoids vendor lock-in while maintaining flexibility and ease of use.
 
-## Steps for Getting the App from v0.dev to Open-Next and Cloudflare
+## Steps for Getting the App from v0.dev to OpenNext and Cloudflare
 
-### 1. Setting Up the Open-Next/Cloudflare Project
+### 1. Setting Up the OpenNext/Cloudflare Project
 
 Start by installing the necessary dependencies for Open-Next and Cloudflare integration:
 
@@ -61,7 +61,7 @@ npm install framer-motion recharts lucide-react
 
 ### 4. Creating Component and App Files
 
-Since **Open-Next Cloudflare** doesn’t scaffold the necessary code folders, you need to manually create them and copy the code from v0.dev:
+Since **OpenNext Cloudflare** doesn’t scaffold the necessary code folders, you need to manually create them and copy the code from v0.dev:
 
 ```bash
 mkdir components
